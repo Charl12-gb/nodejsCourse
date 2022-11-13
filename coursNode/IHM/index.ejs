@@ -12,9 +12,10 @@
     <div style="width:50%; margin:auto;">
         <%- include('./composants/header') %>
             <section>
-                <form method="" action="">
+                <form method="post" action="/notes">
+                    <input type="hidden" name="id" id="id" value="">
                     <label>Titre</label><br>
-                    <input type="text" id="titre" name="titre"><br><br>
+                    <input type="text" id="title" name="title"><br><br>
                     <label>Description</label><br>
                     <textarea name="description" id="description" row="5" cols="20"></textarea>
                     <br>
@@ -25,18 +26,35 @@
 
             <section>
                 <h2>Liste des notes</h2>
-                <ul>
-                    <% for( i=0; i<notes.length; i++ ) { %>
-                        <li>
-                            <%= notes[i].title %>
-                        </li>
-                        <% } %>
-                </ul>
+                <hr>
+                <% for( i=0; i<resultat.length; i++ ) { %>
+                    <h3>
+                        <%= resultat[i].title %>
+                    </h3>
+                    <p>
+                        <%= resultat[i].description %>
+                    </p>
+                    <input type="button" style="background-color: red; border-radius: 10px; height: 30px;" value="Supprimer" onclick="supprimer('<%= resultat[i].id %>')">
+                    <input type="button" style="background-color: greenyellow; border-radius: 10px; height: 30px;" value="Modifier" onclick="remplirDonne('<%= resultat[i].id %>', '<%= resultat[i].title %>', '<%= resultat[i].description %>')">
+                    <% } %>
+
             </section>
-            <p>
-                <%=dateVisite%>
-            </p>
     </div>
 </body>
+
+<script>
+    function remplirDonne(id, title, desc) {
+        document.getElementById('id').value = id;
+        document.getElementById('title').value = title;
+        document.getElementById('description').value = desc;
+    }
+
+    function supprimer(id) {
+        let pointFinal = 'notes/' + id;
+        fetch(pointFinal, {
+            method: "DELETE"
+        }).then((reponse) => reponse.json()).then((donnee) => window.location.href = donnee.routeRacine).catch((erreur) => console.log(erreur));
+    }
+</script>
 
 </html>
